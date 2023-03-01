@@ -13,12 +13,12 @@
   <article>
     <div class="h-100 p-5 bg-light border rounded-3">
       <ul>
-        <h2> {{ post.heading }} </h2>
+        <!-- <h2> {{ post.heading }} </h2> -->
         <li>
           {% if post.author.get_full_name %}
-            Автор: {{ post.author.get_full_name }}
+          Автор: {{ post.author.get_full_name }}
           {% else %}
-            Автор: {{ post.author }}
+          Автор: {{ post.author }}
           {% endif %}
         </li>
         <li>
