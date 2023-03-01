@@ -229,18 +229,20 @@ class PaginatorViewsTests(TestCase):
                     len(response.context['page_obj']), NUMBER_OF_TEST_POSTS
                     - NUM_OF_POSTS)
 
+
 class PostViewsFollowTests(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
         cls.author = User.objects.create_user(username=TEST_AUTHOR_USERNAME)
-        cls.author_1 = User.objects.create_user(username=TEST_AUTHOR_USERNAME+"1")
+        cls.author_1 = User.objects.create_user(
+            username=TEST_AUTHOR_USERNAME + "1")
 
     def setUp(self):
         self.authorized_client = Client()
         self.authorized_client.force_login(self.author)
         self.authorized_client_1 = Client()
-        self.authorized_client_1.force_login(self.author_1)        
+        self.authorized_client_1.force_login(self.author_1)
 
     def test_authorized_user_follow_unfollow(self):
         """Авторизованный пользователь может подписываться и 
@@ -250,9 +252,9 @@ class PostViewsFollowTests(TestCase):
                     kwargs={'username': self.author_1.username})
         )
         self.assertTrue(
-            Follow.objects.filter(user=self.author, 
+            Follow.objects.filter(user=self.author,
                                   author=self.author_1).exists()
-                                  )
+        )
         self.authorized_client.get(
             reverse('posts:profile_unfollow',
                     kwargs={'username': self.author_1.username})
@@ -260,7 +262,7 @@ class PostViewsFollowTests(TestCase):
         self.assertFalse(
             Follow.objects.filter(user=self.author,
                                   author=self.author_1).exists()
-                                  )
+        )
 
     def test_new_entry_in_feed_of_subscribed_users(self):
         """Новая запись появляется в ленте подписанных пользователей"""
@@ -268,11 +270,13 @@ class PostViewsFollowTests(TestCase):
             reverse('posts:profile_follow',
                     kwargs={'username': self.author_1.username})
         )
-        subscribed_1 = Follow.objects.values_list('author').filter(user=self.author)
+        subscribed_1 = Follow.objects.values_list(
+            'author').filter(user=self.author)
         post_list_1 = Post.objects.filter(author__in=subscribed_1)
         post = Post.objects.create(author=self.author_1,
-                                    text=TEST_POST_TEXT,)
+                                   text=TEST_POST_TEXT,)
         self.assertIn(post, post_list_1)
-        authors_2 = Follow.objects.values_list('author').filter(user=self.author_1)
+        authors_2 = Follow.objects.values_list(
+            'author').filter(user=self.author_1)
         post_list_2 = Post.objects.filter(author__in=authors_2)
         self.assertNotIn(post, post_list_2)
