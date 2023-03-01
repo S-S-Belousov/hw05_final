@@ -12,11 +12,8 @@ class PostFormTests(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.author = User.objects.create_user(username=TEST_AUTHOR_USERNAME)
-        cls.group = Group.objects.create(
-            title=TEST_GROUP_TITLE,
-            slug=TEST_GROUP_SLUG,
-        )
+        cls.author = User.objects.create_user(username=TEST_AUTHOR_USERNAME,)
+        cls.group = Group.objects.create(slug=TEST_GROUP_SLUG,)
         uploaded = SimpleUploadedFile(
             name='test.gif',
             content=TEST_IMAGE,
@@ -65,7 +62,7 @@ class PostFormTests(TestCase):
         comments_count = Comment.objects.count()
         self.authorized_client.post(
             reverse(
-                'posts:add_comment', kwargs={'post_id': self.post.id},
+                'posts:add_comment', kwargs={'post_id': self.post.pk},
             ),
             data=self.comment_form_data,
             follow=True
@@ -77,11 +74,6 @@ class PostFormTests(TestCase):
 
     def test_author_edit_post(self):
         """Валидная форма изменяет запись в Posts."""
-        self.authorized_client.post(
-            reverse('posts:post_create'),
-            data=self.form_data,
-            follow=True
-        )
         post = Post.objects.get(id=self.post.pk)
         self.authorized_client.get(f'/posts/{post.pk}/edit/')
         posts_count = Post.objects.count()

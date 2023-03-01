@@ -27,15 +27,17 @@
         {% if post.group %}
         <p><a href="{% url 'posts:group_list' post.group.slug %}">все записи группы</a></p>
         {% endif %}
+        {% if author != request.user %} 
         {% if following %}
-        <a class="btn btn-lg btn-light" href="{% url 'posts:profile_unfollow' author.username %}" role="button">
+          <a class="btn btn-lg btn-dark" href="{% url 'posts:profile_unfollow' author.username %}" role="button">
             Отписаться
-        </a>
+          </a>
         {% else %}
-        <a class="btn btn-lg btn-primary" href="{% url 'posts:profile_follow' author.username %}" role="button">
+          <a class="btn btn-lg btn-primary" href="{% url 'posts:profile_follow' author.username %}" role="button">
             Подписаться
-        </a>
+          </a>
         {% endif %}
+      {% endif %} 
     </div>
 
     {% if not forloop.last %}

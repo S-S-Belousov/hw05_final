@@ -37,11 +37,17 @@ def group_posts(request, slug):
 
 
 def profile(request, username):
-    user = get_object_or_404(User, username=username)
+    user = request.user
+    author = get_object_or_404(User, username=username)
+    following = (
+    user.is_authenticated
+    and Follow.objects.filter(user=user, author=author)
+    )
     post_list = user.posts.all()
     context = {
-        'author': user,
         'page_obj': get_paginator(request, post_list),
+        'author': author,
+        'following': following,
     }
     return render(request, 'posts/profile.html', context)
 
@@ -127,7 +133,10 @@ def profile_follow(request, username):
     author = get_object_or_404(User, username=username)
 
     if request.user != author:
-        Follow.objects.get_or_create(user=request.user, author=author)
+        Follow.objects.get_or_create(
+            user=request.user, 
+            author=author,
+            )
 
     return redirect('posts:profile', username=username)
 
