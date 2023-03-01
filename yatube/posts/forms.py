@@ -6,10 +6,12 @@ from .models import Post, Comment
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = (  # "heading",
+        fields = (
+            # "heading",
             "text",
             "group",
-            "image")
+            "image"
+        )
 
 
 class CommentForm(forms.ModelForm):
