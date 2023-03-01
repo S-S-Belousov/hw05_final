@@ -5,7 +5,8 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from posts.models import Group, Post, User, Comment
 from .variables import (TEST_GROUP_TITLE, TEST_GROUP_SLUG,
                         TEST_POST_TEXT, TEST_EDITED_POST_TEXT,
-                        TEST_AUTHOR_USERNAME, TEST_IMAGE, TEST_COMMENT)
+                        TEST_AUTHOR_USERNAME, TEST_IMAGE, TEST_COMMENT,
+                        TEST_HEADING,)
 
 
 class PostFormTests(TestCase):
@@ -25,6 +26,7 @@ class PostFormTests(TestCase):
             group=cls.group,
         )
         cls.form_data = {
+            'heading': TEST_HEADING,
             'text': TEST_POST_TEXT + "1",
             'group': cls.group,
             'author': cls.author,
@@ -34,6 +36,7 @@ class PostFormTests(TestCase):
             'text': TEST_COMMENT,
         }
         cls.edited_form_data = {
+            'heading': TEST_HEADING,
             'text': TEST_EDITED_POST_TEXT,
             'group': cls.group.pk,
         }

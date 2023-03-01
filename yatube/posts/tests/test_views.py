@@ -7,12 +7,12 @@ from django.db.models.fields.files import ImageFieldFile
 
 from http import HTTPStatus
 
-from posts.models import Post, Group, User, Comment
+from posts.models import Post, Group, User, Comment, Follow
 from yatube.settings import NUM_OF_POSTS
 from .variables import (NUMBER_OF_TEST_POSTS, TEST_GROUP_TITLE,
                         TEST_GROUP_SLUG, TEST_GROUP_DESCRIPTION,
                         TEST_POST_TEXT, TEST_AUTHOR_USERNAME,
-                        TEST_IMAGE, TEST_COMMENT)
+                        TEST_IMAGE, TEST_COMMENT,)
 
 
 class PostViewsTests(TestCase):
@@ -228,3 +228,51 @@ class PaginatorViewsTests(TestCase):
                 self.assertEqual(
                     len(response.context['page_obj']), NUMBER_OF_TEST_POSTS
                     - NUM_OF_POSTS)
+
+class PostViewsFollowTests(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.author = User.objects.create_user(username=TEST_AUTHOR_USERNAME)
+        cls.author_1 = User.objects.create_user(username=TEST_AUTHOR_USERNAME+"1")
+
+    def setUp(self):
+        self.authorized_client = Client()
+        self.authorized_client.force_login(self.author)
+        self.authorized_client_1 = Client()
+        self.authorized_client_1.force_login(self.author_1)        
+
+    def test_authorized_user_follow_unfollow(self):
+        """Авторизованный пользователь может подписываться и 
+        отписываться от других авторов"""
+        self.authorized_client.get(
+            reverse('posts:profile_follow',
+                    kwargs={'username': self.author_1.username})
+        )
+        self.assertTrue(
+            Follow.objects.filter(user=self.author, 
+                                  author=self.author_1).exists()
+                                  )
+        self.authorized_client.get(
+            reverse('posts:profile_unfollow',
+                    kwargs={'username': self.author_1.username})
+        )
+        self.assertFalse(
+            Follow.objects.filter(user=self.author,
+                                  author=self.author_1).exists()
+                                  )
+
+    def test_new_entry_in_feed_of_subscribed_users(self):
+        """Новая запись появляется в ленте подписанных пользователей"""
+        self.authorized_client.get(
+            reverse('posts:profile_follow',
+                    kwargs={'username': self.author_1.username})
+        )
+        subscribed_1 = Follow.objects.values_list('author').filter(user=self.author)
+        post_list_1 = Post.objects.filter(author__in=subscribed_1)
+        post = Post.objects.create(author=self.author_1,
+                                    text=TEST_POST_TEXT,)
+        self.assertIn(post, post_list_1)
+        authors_2 = Follow.objects.values_list('author').filter(user=self.author_1)
+        post_list_2 = Post.objects.filter(author__in=authors_2)
+        self.assertNotIn(post, post_list_2)

@@ -37,17 +37,20 @@ def group_posts(request, slug):
 
 
 def profile(request, username):
-    user = request.user
     author = get_object_or_404(User, username=username)
-    following = (
-    user.is_authenticated
-    and Follow.objects.filter(user=user, author=author)
+    paginator = Paginator(author.posts.all(), NUM_OF_POSTS)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    following = (request.user.is_authenticated and Follow.objects.filter(
+        user=request.user,
+        author=author).exists()
     )
-    post_list = user.posts.all()
     context = {
-        'page_obj': get_paginator(request, post_list),
         'author': author,
-        'following': following,
+        'paginator': paginator,
+        'page_number': page_number,
+        'page_obj': page_obj,
+        'following': following
     }
     return render(request, 'posts/profile.html', context)
 

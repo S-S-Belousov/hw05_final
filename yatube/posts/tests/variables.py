@@ -4,6 +4,8 @@ TEST_GROUP_SLUG = "TestSlug"
 
 TEST_GROUP_DESCRIPTION = "Тестовое описание"
 
+TEST_HEADING = "Тестовый заголовок"
+
 TEST_POST_TEXT = "Тестовый текст"
 
 TEST_EDITED_POST_TEXT = "Отредактированный текст"

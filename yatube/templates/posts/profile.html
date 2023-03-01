@@ -9,8 +9,13 @@
     <div class="h-100 p-5 bg-light border rounded-3">
         <article>
             <ul>
+                <h2> {{ post.heading }} </h2>
                 <li>
-                    Автор: {{ post.author.get_full_name }}
+                    {% if post.author.get_full_name %}
+                        Автор: {{ post.author.get_full_name }}
+                    {% else %}
+                        Автор: {{ post.author }}
+                    {% endif %}
                     <br>
                     <a href="{% url 'posts:profile' post.author.username %}">все посты пользователя</a>
                 </li>
@@ -26,18 +31,18 @@
         </article>
         {% if post.group %}
         <p><a href="{% url 'posts:group_list' post.group.slug %}">все записи группы</a></p>
-        {% endif %}
-        {% if author != request.user %} 
-        {% if following %}
-          <a class="btn btn-lg btn-dark" href="{% url 'posts:profile_unfollow' author.username %}" role="button">
-            Отписаться
-          </a>
-        {% else %}
-          <a class="btn btn-lg btn-primary" href="{% url 'posts:profile_follow' author.username %}" role="button">
-            Подписаться
-          </a>
-        {% endif %}
-      {% endif %} 
+        {% endif %} 
+            {% if author != request.user %} 
+                {% if following %}
+                    <a class="btn btn-lg btn-dark" href="{% url 'posts:profile_unfollow' author.username %}" role="button">
+                        Отписаться
+                    </a>
+                {% else %}
+                    <a class="btn btn-lg btn-primary" href="{% url 'posts:profile_follow' author.username %}" role="button">
+                        Подписаться
+                    </a>
+                {% endif %}
+            {% endif %} 
     </div>
 
     {% if not forloop.last %}
