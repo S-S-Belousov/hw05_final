@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
 
 from posts.models import Group, Post, User, Comment
-from .variables import (TEST_GROUP_TITLE, TEST_GROUP_SLUG,
+from .variables import (TEST_GROUP_SLUG,
                         TEST_POST_TEXT, TEST_EDITED_POST_TEXT,
                         TEST_AUTHOR_USERNAME, TEST_IMAGE, TEST_COMMENT,
                         TEST_HEADING,)

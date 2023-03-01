@@ -156,7 +156,7 @@ class PostViewsTests(TestCase):
         )
 
     def test_views_auth_comment_creation(self):
-        """Проверяем что комментировать посты может только авторизированный 
+        """Проверяем что комментировать посты может только авторизированный
         пользователь."""
         comments_count = Comment.objects.count()
         response = self.guest_client.post(
@@ -245,7 +245,7 @@ class PostViewsFollowTests(TestCase):
         self.authorized_client_1.force_login(self.author_1)
 
     def test_authorized_user_follow_unfollow(self):
-        """Авторизованный пользователь может подписываться и 
+        """Авторизованный пользователь может подписываться и
         отписываться от других авторов"""
         self.authorized_client.get(
             reverse('posts:profile_follow',
