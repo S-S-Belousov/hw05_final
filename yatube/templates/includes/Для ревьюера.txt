@@ -1,0 +1,12 @@
+В ревью Вы указали выделить текущуу страницу
+Янашел в интернете как это делать 
+(с помощью request.resolver_match.view_name)
+Делал так:
+{% with request.resolver_match.view_name as view_name %}
+<a class="nav-link" {% if view_name='about:author' %} 
+active {% endif %} href="{% url 'about:author' %}">
+Об авторе</a>
+И так со всеми ссылками
+Но тогда сервер падает, не могу понять в чем дело
+Выдает: Server Error (500)
+Тесты тоже не проходит

@@ -1,9 +1,3 @@
-# Для ревьюера. Добавил поле "Заголовок", все работало
-# но тесты Яндекса не пропустили. Пишет что должно быть
-# именно 3 поля. Оно и понятно, заголовок - обязательное
-# поле. Тесты не сработают.
-# Пришлось все закоментировать.
-
 from django.core.cache import cache
 from django.test import TestCase, Client
 from django.urls import reverse
@@ -175,6 +169,18 @@ class PostViewsTests(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(comments_count, Comment.objects.count())
 
+
+class CashViewsTests(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.author = User.objects.create_user(username=TEST_AUTHOR_USERNAME)
+
+    def setUp(self):
+        self.guest_client = Client()
+        self.authorized_client = Client()
+        self.authorized_client.force_login(self.author)
+
     def test_views_index_cache(self):
         """Проверяем работу кэша на главной странице."""
         response = self.guest_client.get(reverse('posts:index'))
@@ -250,9 +256,9 @@ class PostViewsFollowTests(TestCase):
         self.authorized_client_1 = Client()
         self.authorized_client_1.force_login(self.author_1)
 
-    def test_authorized_user_follow_unfollow(self):
-        """Авторизованный пользователь может подписываться и
-        отписываться от других авторов"""
+    def test_authorized_user_follow(self):
+        """Авторизованный пользователь может подписываться на
+          других авторов"""
         self.authorized_client.get(
             reverse('posts:profile_follow',
                     kwargs={'username': self.author_1.username})
@@ -261,6 +267,10 @@ class PostViewsFollowTests(TestCase):
             Follow.objects.filter(user=self.author,
                                   author=self.author_1).exists()
         )
+
+    def test_authorized_user_unfollow(self):
+        """Авторизованный пользователь может отписываться
+        от других авторов"""
         self.authorized_client.get(
             reverse('posts:profile_unfollow',
                     kwargs={'username': self.author_1.username})
@@ -282,7 +292,17 @@ class PostViewsFollowTests(TestCase):
         post = Post.objects.create(author=self.author_1,
                                    text=TEST_POST_TEXT,)
         self.assertIn(post, post_list_1)
+
+    def test_new_entry_not_in_feed_of_subscribed_users(self):
+        """Новая запись не появляется в ленте не
+        подписанных пользователей"""
+        self.authorized_client.get(
+            reverse('posts:profile_follow',
+                    kwargs={'username': self.author_1.username})
+        )
         authors_2 = Follow.objects.values_list(
             'author').filter(user=self.author_1)
+        post = Post.objects.create(author=self.author_1,
+                                   text=TEST_POST_TEXT,)
         post_list_2 = Post.objects.filter(author__in=authors_2)
         self.assertNotIn(post, post_list_2)

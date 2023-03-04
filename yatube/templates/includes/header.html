@@ -1,4 +1,5 @@
 {% load static %}
+
 <head>
   <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <div class="container-fluid">
@@ -15,26 +16,26 @@
             <a class="nav-link" href="{% url 'about:tech' %}">Технологии</a>
           </li>
           {% if user.is_authenticated %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'posts:post_create' %}">Новая запись</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'users:password_change' %}">Изменить пароль</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'users:logout' %}">Выйти</a>
-            </li>
-            <li>
-              Пользователь: {{ user.username }}
-            </li> 
-          {% else %}  
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'users:login' %}">Войти</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'users:signup' %}">Регистрация</a>
-            </li>
-          {% endif %} 
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'posts:post_create' %}">Новая запись</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'users:password_change' %}">Изменить пароль</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'users:logout' %}">Выйти</a>
+          </li>
+          <li>
+            Пользователь: {{ user.username }}
+          </li>
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'users:login' %}">Войти</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'users:signup' %}">Регистрация</a>
+          </li>
+          {% endif %}
         </ul>
       </div>
     </div>
