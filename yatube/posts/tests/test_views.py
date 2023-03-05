@@ -170,7 +170,7 @@ class PostViewsTests(TestCase):
         self.assertEqual(comments_count, Comment.objects.count())
 
 
-class CashViewsTests(TestCase):
+class CacheViewsTests(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
