@@ -6,6 +6,8 @@ TEST_GROUP_DESCRIPTION = "Тестовое описание"
 
 TEST_POST_TEXT = "Тестовый текст"
 
+TEST_HEADING = "Тестовый заголовок"
+
 TEST_EDITED_POST_TEXT = "Отредактированный текст"
 
 TEST_AUTHOR_USERNAME = "TestAuthor"

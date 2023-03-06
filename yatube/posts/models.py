@@ -14,6 +14,7 @@ class Group(models.Model):
 
 
 class Post(models.Model):
+    heading = models.CharField(max_length=200)
     text = models.TextField()
     pub_date = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(
