@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, redirect, render
+from django.core.mail import send_mail
 
 from yatube.settings import NUM_OF_POSTS
 
@@ -111,6 +112,14 @@ def add_comment(request, post_id):
         comment.author = request.user
         comment.post = post
         comment.save()
+    send_mail(
+        'Новый комментарий',
+        f'У вас новый комментарий к посту "{post.heading}". '+ 
+        f'{comment.author}: {comment.text}',
+        'YaTube@YaTube.ru',
+        [request.user.email],
+        fail_silently=False,
+    ) 
     return redirect('posts:post_detail', post_id=post_id)
 
 
